@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Travel Planner Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen font-sans overflow-x-hidden">
+    <!-- Background Animation -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+    </div>
+
+    <div class="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <div class="text-center mb-16 transform transition-all duration-1000">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-6 animate-pulse shadow-2xl">
+                <i class="fas fa-globe-americas text-3xl text-white"></i>
+            </div>
+            <h1 class="text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+                Travel Planner Pro
+            </h1>
+            <p class="text-blue-100 text-xl max-w-3xl mx-auto leading-relaxed mb-6">
+                Craft your dream vacation with AI-powered precision and immersive mapping
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <!-- Input Form -->
+            <div class="glass rounded-3xl p-8 shadow-2xl">
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-pencil-alt text-blue-300 mr-3"></i>
+                    Plan Your Adventure
+                </h2>
+                
+                <form id="travel-form" class="space-y-6">
+                    <!-- City Input -->
+                    <div class="form-group">
+                        <label class="block text-blue-200 font-semibold mb-3">Destination City</label>
+                        <div class="relative">
+                            <i class="fas fa-city absolute left-4 top-4 text-blue-300"></i>
+                            <input type="text" id="city" placeholder="e.g., Paris, Tokyo, Bali" 
+                                   class="w-full pl-12 pr-4 py-4 bg-blue-800/50 border-2 border-blue-600/30 rounded-2xl text-black placeholder-blue-300 focus:border-blue-400 transition-all duration-300">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Budget Input (FIXED to Black Text) -->
+                        <div class="form-group">
+                            <label class="block text-blue-200 font-semibold mb-3">Total Budget (₹)</label>
+                            <div class="relative">
+                                <i class="fas fa-rupee-sign absolute left-4 top-4 text-blue-300"></i>
+                                <input type="number" id="budget" placeholder="50,000" 
+                                       class="w-full pl-12 pr-4 py-4 bg-blue-800/50 border-2 border-blue-600/30 rounded-2xl text-black placeholder-blue-300 focus:border-green-400 transition-all duration-300">
+                            </div>
+                        </div>
+
+                        <!-- Days Input -->
+                        <div class="form-group">
+                            <label class="block text-blue-200 font-semibold mb-3">Trip Duration</label>
+                            <div class="relative">
+                                <i class="fas fa-calendar-day absolute left-4 top-4 text-blue-300"></i>
+                                <input type="number" id="days" placeholder="7 days" 
+                                       class="w-full pl-12 pr-4 py-4 bg-blue-800/50 border-2 border-blue-600/30 rounded-2xl text-black placeholder-blue-300 focus:border-orange-400 transition-all duration-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="form-group">
+                        <label class="block text-blue-200 font-semibold mb-3">Travel Preferences</label>
+                        <div class="relative">
+                            <i class="fas fa-heart absolute left-4 top-4 text-blue-300"></i>
+                            <textarea id="preferences" placeholder="Adventure, Luxury, Food, Culture..." 
+                                      class="w-full pl-12 pr-4 py-4 bg-blue-800/50 border-2 border-blue-600/30 rounded-2xl text-black placeholder-blue-300 focus:border-red-400 transition-all duration-300 resize-none"
+                                      rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-5 px-8 rounded-2xl transform transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-wand-magic-sparkles mr-3"></i>
+                        Create Itinerary
+                        <i class="fas fa-arrow-right ml-3"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview Map -->
+            <div class="glass rounded-3xl p-8 shadow-2xl">
+                <h2 class="text-3xl font-bold text-white mb-6">Destination Preview</h2>
+                <div id="preview-map" class="h-96 rounded-2xl overflow-hidden border-2 border-blue-600/30 bg-blue-900/50 flex items-center justify-center">
+                    <i class="fas fa-globe-americas text-4xl text-blue-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Animation -->
+        <div id="loading" class="hidden text-center mb-16">
+            <div class="orbit-spinner mb-6">
+                <div class="orbit"></div>
+                <div class="orbit"></div>
+                <div class="orbit"></div>
+            </div>
+            <p class="text-blue-200 text-xl font-semibold">Creating your itinerary...</p>
+        </div>
+
+        <!-- Output Section -->
+        <div id="output" class="hidden space-y-8"></div>
+
+        <!-- Error Message -->
+        <div id="error" class="hidden glass rounded-3xl p-8 text-center mb-8 border-2 border-red-500/30">
+            <i class="fas fa-exclamation-triangle text-red-300 text-4xl mb-4"></i>
+            <p id="error-message" class="text-red-200 font-semibold text-lg"></p>
+        </div>
+
+        <!-- Debug Info -->
+        <div id="debug" class="hidden glass rounded-3xl p-8 text-center mb-8 border-2 border-yellow-500/30">
+            <p class="text-yellow-200 text-sm" id="debug-info"></p>
+        </div>
+    </div>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
